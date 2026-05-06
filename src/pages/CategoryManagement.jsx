@@ -5,7 +5,7 @@ import Cropper from 'react-easy-crop';
 import './CategoryManagement.css';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/categories`;
-const BASE_URL = new URL(import.meta.env.VITE_API_URL).origin;
+const BASE_URL = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
 
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);

@@ -7,7 +7,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import './BlogManagement.css';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/blogs`;
-const BASE_URL = new URL(import.meta.env.VITE_API_URL).origin;
+const BASE_URL = import.meta.env.VITE_API_URL.replace(/\/api$/, '');
 
 
 const BlogManagement = () => {
