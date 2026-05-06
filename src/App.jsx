@@ -9,7 +9,7 @@ import './App.css'
 
 function App() {
   return (
-    <Router>
+    <Router basename="/projectblogs-admin">
       <Layout>
         <Routes>
           <Route path="/" element={<Navigate to="/otp-management" replace />} />
