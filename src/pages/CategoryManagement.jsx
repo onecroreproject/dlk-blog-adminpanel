@@ -5,7 +5,7 @@ import Cropper from 'react-easy-crop';
 import './CategoryManagement.css';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/categories`;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = new URL(import.meta.env.VITE_API_URL).origin;
 
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);
@@ -14,7 +14,7 @@ const CategoryManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
-  
+
   // Cropper State
   const [showCropper, setShowCropper] = useState(false);
   const [cropImage, setCropImage] = useState(null);
@@ -55,7 +55,7 @@ const CategoryManagement = () => {
     const image = new Image();
     image.src = imageSrc;
     await new Promise(resolve => image.onload = resolve);
-    
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
@@ -85,7 +85,7 @@ const CategoryManagement = () => {
     try {
       const croppedBlob = await getCroppedImg(cropImage, croppedAreaPixels);
       const file = new File([croppedBlob], "category.jpg", { type: "image/jpeg" });
-      
+
       if (activeCategoryForCrop) {
         // Update existing category immediately after crop
         handleUpdate(activeCategoryForCrop, file);
@@ -178,10 +178,10 @@ const CategoryManagement = () => {
             <Plus className="text-black" size={28} />
             <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#000000' }}>Quick Add</h2>
           </div>
-          
+
           <div className="form-group mb-6">
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 700, fontSize: '0.8rem', textTransform: 'uppercase', color: '#888' }}>Category Name</label>
-            <input 
+            <input
               type="text"
               placeholder="e.g. Artificial Intelligence"
               className="premium-input"
@@ -221,15 +221,15 @@ const CategoryManagement = () => {
           <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '1.5rem' }}>
             Perfect for rapid setup. Enter names separated by <strong>new lines</strong>.
           </p>
-          
-          <textarea 
+
+          <textarea
             placeholder="Web Design&#10;Cloud Computing&#10;Cybersecurity"
             className="premium-textarea"
             value={bulkInput}
             onChange={(e) => setBulkInput(e.target.value)}
           />
-          <button 
-            className="secondary-btn-premium" 
+          <button
+            className="secondary-btn-premium"
             onClick={handleBulkAdd}
             disabled={isLoading || !bulkInput.trim()}
           >
@@ -267,7 +267,7 @@ const CategoryManagement = () => {
                 <td>
                   {editingId === category._id ? (
                     <div className="flex items-center gap-2">
-                      <input 
+                      <input
                         className="premium-table-input"
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
@@ -279,7 +279,7 @@ const CategoryManagement = () => {
                     </div>
                   ) : (
                     <div className="category-info-cell">
-                      <span 
+                      <span
                         className="cat-name-p"
                         onClick={() => { setEditingId(category._id); setEditValue(category.name); }}
                       >

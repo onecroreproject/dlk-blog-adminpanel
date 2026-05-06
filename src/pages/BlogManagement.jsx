@@ -7,7 +7,8 @@ import 'react-quill-new/dist/quill.snow.css';
 import './BlogManagement.css';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/blogs`;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = new URL(import.meta.env.VITE_API_URL).origin;
+
 
 const BlogManagement = () => {
   const [blogs, setBlogs] = useState([]);
@@ -237,9 +238,9 @@ const BlogManagement = () => {
               <tr key={blog._id}>
                 <td>
                   <div className="blog-title-cell">
-                    <img 
-                      src={blog.titleImage ? `${BASE_URL}/${blog.titleImage}` : ''} 
-                      alt="" 
+                    <img
+                      src={blog.titleImage ? `${BASE_URL}/${blog.titleImage}` : ''}
+                      alt=""
                       className="blog-thumb"
                       onError={(e) => e.target.src = 'https://via.placeholder.com/40'}
                     />
@@ -288,20 +289,20 @@ const BlogManagement = () => {
               <div className="form-grid">
                 <div className="form-group">
                   <label style={{ color: 'black', fontWeight: 800 }}>Title</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Enter blog title"
                     value={formData.title}
-                    onChange={(e) => setFormData({...formData, title: e.target.value})}
-                    required 
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
                     style={{ color: 'black' }}
                   />
                 </div>
                 <div className="form-group">
                   <label style={{ color: 'black', fontWeight: 800 }}>Category</label>
-                  <select 
+                  <select
                     value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     required
                     style={{ color: 'black' }}
                   >
@@ -314,27 +315,27 @@ const BlogManagement = () => {
 
                 <div className="form-group">
                   <label style={{ color: 'black', fontWeight: 800 }}>Author Name</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     placeholder="Enter author name"
                     value={formData.author}
-                    onChange={(e) => setFormData({...formData, author: e.target.value})}
-                    required 
+                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                    required
                     style={{ color: 'black' }}
                   />
                 </div>
 
                 <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     id="isEditorsChoice"
                     checked={formData.isEditorsChoice}
-                    onChange={(e) => setFormData({...formData, isEditorsChoice: e.target.checked})}
+                    onChange={(e) => setFormData({ ...formData, isEditorsChoice: e.target.checked })}
                     style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                   />
                   <label htmlFor="isEditorsChoice" style={{ color: 'black', fontWeight: 800, cursor: 'pointer' }}>Push to Editor's Choice</label>
                 </div>
-                
+
                 <div className="form-group">
                   <label style={{ color: 'black', fontWeight: 800 }}>Article Tags</label>
                   <div className="tags-pill-input">
@@ -345,8 +346,8 @@ const BlogManagement = () => {
                         </span>
                       ))}
                     </div>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Type and press Enter..."
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
@@ -381,8 +382,8 @@ const BlogManagement = () => {
                           <span>Upload Media</span>
                         </label>
                       )}
-                      <input 
-                        type="file" 
+                      <input
+                        type="file"
                         id={type}
                         accept="image/*,video/*"
                         onChange={(e) => handleImageChange(e, type)}
@@ -395,11 +396,11 @@ const BlogManagement = () => {
 
               <div className="editor-container">
                 <label style={{ display: 'block', marginBottom: '1rem', fontWeight: 800, color: 'black' }}>Blog Content</label>
-                <ReactQuill 
-                  theme="snow" 
+                <ReactQuill
+                  theme="snow"
                   placeholder="Start writing your blog content here..."
                   value={formData.content}
-                  onChange={(val) => setFormData({...formData, content: val})}
+                  onChange={(val) => setFormData({ ...formData, content: val })}
                   style={{ height: '400px', marginBottom: '3rem', color: 'black' }}
                 />
               </div>
@@ -426,7 +427,7 @@ const BlogManagement = () => {
                 image={cropImage}
                 crop={crop}
                 zoom={zoom}
-                aspect={cropType === 'authorAvatar' ? 1 : 16/9}
+                aspect={cropType === 'authorAvatar' ? 1 : 16 / 9}
                 onCropChange={setCrop}
                 onCropComplete={onCropComplete}
                 onZoomChange={setZoom}
