@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ShieldCheck, RefreshCcw, Clock, Lock } from 'lucide-react';
+import { ShieldCheck, RefreshCcw, Lock } from 'lucide-react';
 import './OtpManagement.css';
 
 const API_URL = `${import.meta.env.VITE_API_URL}/otp`;
@@ -8,36 +8,10 @@ const API_URL = `${import.meta.env.VITE_API_URL}/otp`;
 const OtpManagement = () => {
   const [otpData, setOtpData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [timeLeft, setTimeLeft] = useState('');
 
   useEffect(() => {
     fetchLatestOtp();
   }, []);
-
-  useEffect(() => {
-    if (!otpData) return;
-
-    const updateTimer = () => {
-      const now = new Date();
-      const expiry = new Date(otpData.expiresAt);
-      const diff = expiry - now;
-
-      if (diff <= 0) {
-        fetchLatestOtp();
-        return;
-      }
-
-      const h = Math.floor(diff / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-      setTimeLeft(`${h}h ${m}m ${s}s`);
-    };
-
-    updateTimer();
-    const timer = setInterval(updateTimer, 1000);
-    return () => clearInterval(timer);
-  }, [otpData]);
 
   const fetchLatestOtp = async () => {
     setIsLoading(true);
@@ -75,17 +49,10 @@ const OtpManagement = () => {
               <span className="otp-code">{otpData.code}</span>
             </div>
             
-            <div className="validity-badge">
-              <Clock size={16} />
-              <span>Time Until Expiration</span>
-            </div>
-            
-            <div className="countdown-timer">
-              {timeLeft}
-            </div>
+
 
             <span className="expiry-text">
-              New code will be generated at midnight
+              Expires today at 11:59 PM
             </span>
           </div>
         ) : (
@@ -115,17 +82,7 @@ const OtpManagement = () => {
           color: #64748b;
           font-weight: 500;
         }
-        .countdown-timer {
-          font-size: 2rem;
-          font-weight: 800;
-          color: #ef4444;
-          margin: 1rem 0;
-          font-family: monospace;
-          background: #fef2f2;
-          padding: 0.5rem 1.5rem;
-          border-radius: 12px;
-          border: 1px solid #fee2e2;
-        }
+
         .error-message {
           color: #ef4444;
           text-align: center;
