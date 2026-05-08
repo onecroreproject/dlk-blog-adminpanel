@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Plus, Edit2, Trash2, X, Upload, Save, ArrowLeft, Image as ImageIcon, Check, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Upload, Save, ArrowLeft, Image as ImageIcon, Check, Star, Calendar, BarChart2, BookOpen } from 'lucide-react';
 import ReactQuill from 'react-quill-new';
 import Cropper from 'react-easy-crop';
 import 'react-quill-new/dist/quill.snow.css';
@@ -99,6 +99,19 @@ const BlogManagement = () => {
       } catch (err) {
         console.error('Error deleting blog:', err);
       }
+    }
+  };
+
+  const toggleEditorsChoice = async (blog) => {
+    try {
+      await axios.put(`${API_URL}/${blog._id}`, {
+        ...blog,
+        isEditorsChoice: !blog.isEditorsChoice
+      });
+      fetchBlogs();
+    } catch (err) {
+      console.error('Error toggling Editor\'s Choice:', err);
+      alert('Failed to update Editor\'s Choice status');
     }
   };
 
@@ -212,6 +225,32 @@ const BlogManagement = () => {
     setCurrentBlog(null);
   };
 
+  const getStats = () => {
+    const now = new Date();
+    const today = blogs.filter(blog => {
+      const date = new Date(blog.createdAt);
+      return date.toDateString() === now.toDateString();
+    }).length;
+
+    const thisWeek = blogs.filter(blog => {
+      const date = new Date(blog.createdAt);
+      const diffTime = Math.abs(now - date);
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      return diffDays <= 7;
+    }).length;
+
+    const thisMonth = blogs.filter(blog => {
+      const date = new Date(blog.createdAt);
+      const diffTime = Math.abs(now - date);
+      const diffDays = diffTime / (1000 * 60 * 60 * 24);
+      return diffDays <= 30;
+    }).length;
+
+    return { today, thisWeek, thisMonth };
+  };
+
+  const stats = getStats();
+
   return (
     <div className="blog-management" style={{ position: 'relative' }}>
       <div className="page-header">
@@ -221,6 +260,39 @@ const BlogManagement = () => {
         </button>
       </div>
 
+      {/* Stats Cards Section */}
+      <div className="stats-container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+        <div className="stat-card" style={{ background: 'white', padding: '25px', borderRadius: '20px', border: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 10px 20px rgba(0,0,0,0.02)' }}>
+          <div className="stat-icon" style={{ background: '#f0f9ff', padding: '15px', borderRadius: '15px', color: '#0ea5e9' }}>
+            <Calendar size={24} />
+          </div>
+          <div>
+            <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '4px' }}>Posted Today</p>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 900, color: 'black', margin: 0 }}>{stats.today}</h3>
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: 'white', padding: '25px', borderRadius: '20px', border: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 10px 20px rgba(0,0,0,0.02)' }}>
+          <div className="stat-icon" style={{ background: '#fef2f2', padding: '15px', borderRadius: '15px', color: '#ef4444' }}>
+            <BarChart2 size={24} />
+          </div>
+          <div>
+            <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '4px' }}>Posted This Week</p>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 900, color: 'black', margin: 0 }}>{stats.thisWeek}</h3>
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: 'white', padding: '25px', borderRadius: '20px', border: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: '20px', boxShadow: '0 10px 20px rgba(0,0,0,0.02)' }}>
+          <div className="stat-icon" style={{ background: '#f0fdf4', padding: '15px', borderRadius: '15px', color: '#22c55e' }}>
+            <BookOpen size={24} />
+          </div>
+          <div>
+            <p style={{ fontSize: '0.8rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', tracking: '0.1em', marginBottom: '4px' }}>Posted This Month</p>
+            <h3 style={{ fontSize: '1.8rem', fontWeight: 900, color: 'black', margin: 0 }}>{stats.thisMonth}</h3>
+          </div>
+        </div>
+      </div>
+
       <div className="blog-table-container">
         <table className="blog-table">
           <thead>
@@ -228,7 +300,6 @@ const BlogManagement = () => {
               <th style={{ color: 'black' }}>Blog Title</th>
               <th style={{ color: 'black' }}>Author</th>
               <th style={{ color: 'black' }}>Category</th>
-              <th style={{ color: 'black' }}>Choice</th>
               <th style={{ color: 'black' }}>Date</th>
               <th style={{ color: 'black' }}>Actions</th>
             </tr>
@@ -242,23 +313,27 @@ const BlogManagement = () => {
                       src={blog.titleImage ? `${BASE_URL}/${blog.titleImage}` : ''}
                       alt=""
                       className="blog-thumb"
-                      onError={(e) => e.target.src = 'https://via.placeholder.com/40'}
+                      onError={(e) => {
+                        e.target.onerror = null; 
+                        e.target.src = 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=100&auto=format&fit=crop';
+                      }}
                     />
                     <span style={{ color: 'black', fontWeight: 600 }}>{blog.title}</span>
                   </div>
                 </td>
                 <td style={{ color: 'black' }}>{blog.author}</td>
                 <td style={{ color: 'black' }}>{blog.category}</td>
-                <td>
-                  {blog.isEditorsChoice ? (
-                    <Star size={16} fill="#ef4444" color="#ef4444" />
-                  ) : (
-                    <Star size={16} color="#d1d5db" />
-                  )}
-                </td>
                 <td style={{ color: 'black' }}>{new Date(blog.createdAt).toLocaleDateString()}</td>
                 <td>
                   <div className="actions">
+                    <button 
+                      className={`action-btn ${blog.isEditorsChoice ? 'star-active' : ''}`} 
+                      onClick={() => toggleEditorsChoice(blog)}
+                      title="Toggle Editor's Choice"
+                      style={{ color: blog.isEditorsChoice ? '#ef4444' : '#d1d5db' }}
+                    >
+                      <Star size={16} fill={blog.isEditorsChoice ? "#ef4444" : "none"} />
+                    </button>
                     <button className="action-btn edit-btn" onClick={() => handleEdit(blog)}>
                       <Edit2 size={16} />
                     </button>

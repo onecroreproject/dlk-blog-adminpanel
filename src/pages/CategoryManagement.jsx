@@ -254,7 +254,14 @@ const CategoryManagement = () => {
                 <td>
                   <div className="table-image-wrapper">
                     {category.image ? (
-                      <img src={`${BASE_URL}/${category.image}`} alt="" />
+                      <img 
+                        src={`${BASE_URL}/${category.image}`} 
+                        alt="" 
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?q=80&w=100&auto=format&fit=crop';
+                        }}
+                      />
                     ) : (
                       <div className="initial-circle">{category.name.charAt(0)}</div>
                     )}
