@@ -34,7 +34,7 @@ const EmailManagement = () => {
     }
   };
 
-  const filteredSubscribers = subscribers.filter(s => 
+  const filteredSubscribers = subscribers.filter(s =>
     s.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -45,15 +45,15 @@ const EmailManagement = () => {
         <div className="flex gap-4">
           <div className="bg-white p-6 rounded-xl border border-gray-100 flex items-center gap-3 w-64 shadow-sm">
             <Search className="text-gray-300" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search subscribers..." 
+            <input
+              type="text"
+              placeholder="Search subscribers..."
               className="outline-none bg-transparent w-full text-black font-bold text-xs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
         </div>
       </div>
 
@@ -85,7 +85,7 @@ const EmailManagement = () => {
                     {new Date(sub.subscribedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </td>
                   <td>
-                    <span className="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100">
+                    <span className="px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase  border border-green-100">
                       Active
                     </span>
                   </td>
@@ -112,7 +112,7 @@ const EmailManagement = () => {
             <Users size={24} />
           </div>
           <div>
-            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Audience</p>
+            <p className="text-[10px] font-black text-gray-400 uppercase  mb-1">Total Audience</p>
             <h3 className="text-3xl font-black text-black leading-none">{subscribers.length}</h3>
           </div>
         </div>

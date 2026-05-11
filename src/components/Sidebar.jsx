@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { ShieldCheck, LayoutDashboard, Settings, LogOut, Mail, MessageSquare } from 'lucide-react';
+import { ShieldCheck, LayoutDashboard, Settings, LogOut, Mail, MessageSquare, X } from 'lucide-react';
 import './Sidebar.css';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-container">
           <div className="logo-icon">
@@ -13,6 +13,9 @@ const Sidebar = () => {
           </div>
           <span className="logo-text">AdminPanel</span>
         </div>
+        <button className="mobile-close" onClick={onClose}>
+          <X size={24} />
+        </button>
       </div>
 
       <nav className="sidebar-nav">
